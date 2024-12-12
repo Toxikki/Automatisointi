@@ -1,1 +1,1 @@
-Teen scriptin joka testaa netin nopeuden, joka 20 minuutin välein
+Teen sciptin mikä tarkistaa että onko nettisivu päällä vai ei
