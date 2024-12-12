@@ -3,8 +3,8 @@
 # Lokitiedoston sijainti
 $LogFile = "C:\\internet_speed_log.txt"
 
-# Testausväli sekunteina (esim. kerran tunnissa = 3600 sekuntia)
-$TestInterval = 3600
+# Testausväli sekunteina
+$TestInterval = 120
 
 # Tarkistaa, onko speedtest-moduuli asennettu
 if (-not (Get-Command speedtest -ErrorAction SilentlyContinue)) {
