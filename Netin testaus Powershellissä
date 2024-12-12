@@ -1,0 +1,43 @@
+# Internet-nopeustestin PowerShell-skripti
+
+# Lokitiedoston sijainti
+$LogFile = "C:\\internet_speed_log.txt"
+
+# Testausväli sekunteina (esim. kerran tunnissa = 3600 sekuntia)
+$TestInterval = 3600
+
+# Tarkistaa, onko speedtest-moduuli asennettu
+if (-not (Get-Command speedtest -ErrorAction SilentlyContinue)) {
+    Write-Host "Speedtest-moduulia ei löydy. Asennetaan..."
+    Install-Module -Name Speedtest -Force -Scope CurrentUser
+}
+
+# Funktio, joka suorittaa nopeustestin ja kirjaa tulokset
+function Test-InternetSpeed {
+    $Result = speedtest | Out-String
+    $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    
+    # Etsi lataus- ja lähetysnopeudet tuloksista
+    $DownloadSpeed = ($Result -match "Download.+?([0-9\\.]+) Mbps" | Out-Null; $Matches[1])
+    $UploadSpeed = ($Result -match "Upload.+?([0-9\\.]+) Mbps" | Out-Null; $Matches[1])
+    
+    # Kirjaa tulokset lokitiedostoon
+    $LogEntry = "$Timestamp, Download: $DownloadSpeed Mbps, Upload: $UploadSpeed Mbps"
+    Add-Content -Path $LogFile -Value $LogEntry
+    
+    # Tulosta tulokset konsoliin
+    Write-Host $LogEntry
+}
+
+# Pääohjelma
+Write-Host "Internet-nopeustesti käynnissä. Paina Ctrl+C lopettaaksesi."
+
+while ($true) {
+    try {
+        Test-InternetSpeed
+        Start-Sleep -Seconds $TestInterval
+    } catch {
+        Write-Host "Virhe: $_"
+        break
+    }
+}
