@@ -1,55 +1,33 @@
-Settings 
+# Settings
+$websites = @("youtube.com", "google.com", "example.com") # List of websites to check
+$checkInterval = 5 # Interval between checks (in minutes)
 
-$websites = @("youtube.com", "google.com", "example.com") # List of websites to check $checkInterval = 5 # Interval between checks (in minutes) $senderEmail = "youremail@example.com" # Your email address $senderPassword = "yourpassword" # Your email password (use app-specific password if applicable) $smtpServer = "smtp.example.com" # SMTP server for sending the email $smtpPort = 587 # SMTP port (587 is commonly used for TLS) $recipientEmail = "recipient@example.com" # Recipient's email address 
+# Funktio tarkistaa toimiiko sivu
+function Check-Website {
+    param (
+        [string]$website
+    )
 
-Function to send an email notification 
+    try {
+        # Testaa netti yhteyden sivuun
+        $pingResult = Test-Connection -ComputerName $website -Count 1 -ErrorAction Stop
 
-function Send-Email { param ( [string]$subject, [string]$body ) 
+        # Jos onnistuu koodi tulostaa tekstin
+        Write-Host "$Nettisivu toimii."
+    }
+    catch {
+        # Jos pingaus epäonnistuu tulee koodi
+        Write-Host "$Nettisivu on alhaalla"
+    }
+}
 
-# Create a secure password string (make sure to replace with your actual password) 
-$securePassword = ConvertTo-SecureString $senderPassword -AsPlainText -Force 
- 
-# Create email credentials 
-$emailCredential = New-Object System.Management.Automation.PSCredential($senderEmail, $securePassword) 
- 
-# Create and send the email 
-Send-MailMessage -From $senderEmail -To $recipientEmail -Subject $subject -Body $body -SmtpServer $smtpServer -Port $smtpPort -UseSsl -Credential $emailCredential 
-  
+# Main loop: Check the websites every 5 minutes
+while ($true) {
+    foreach ($website in $websites) {
+        Check-Website -website $website
+    }
 
-} 
+    # Wait for the specified interval before checking again
+    Start-Sleep -Seconds ($checkInterval * 60)
+}
 
-Function to check website availability 
-
-function Check-Website { param ( [string]$website ) 
-
-try { 
-    # Test connection to website 
-    $pingResult = Test-Connection -ComputerName $website -Count 1 -ErrorAction Stop 
- 
-    # If successful, return true 
-    Write-Host "$website is up." 
-} 
-catch { 
-    # If ping fails, send an email notification 
-    Write-Host "$website is down!" 
-    $subject = "$website is Down!" 
-    $body = "The website $website is currently down. Please check it." 
- 
-    # Send the email 
-    Send-Email -subject $subject -body $body 
-} 
-  
-
-} 
-
-Main loop: Check the websites every 5 minutes 
-
-while ($true) { foreach ($website in $websites) { Check-Website -website $website } 
-
-# Wait for the specified interval before checking again 
-Start-Sleep -Seconds ($checkInterval * 60) 
-  
-
-} 
-
- 
