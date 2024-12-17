@@ -1,6 +1,6 @@
 # Settings
-$websites = @("youtube.com", "google.com", "example.com") # List of websites to check
-$checkInterval = 5 # Interval between checks (in minutes)
+$websites = @("youtube.com", "google.com" ) # List of websites to check
+$checkInterval = 1 # Interval between checks (in minutes)
 
 # Funktio tarkistaa toimiiko sivu
 function Check-Website {
