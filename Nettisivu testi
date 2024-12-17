@@ -1,5 +1,5 @@
 # Settings
-$websites = @("youtube.com", "google.com" ) # List of websites to check
+$websites = @("youtube.com", "google.com", "comcast.com" ) # List of websites to check
 $checkInterval = 1 # Interval between checks (in minutes)
 
 # Funktio tarkistaa toimiiko sivu
